@@ -32,10 +32,15 @@ caderno-de-erros-nosql/
 ├── api/
 │   └── main.py
 ├── database/
-│   ├── criar_banco.py
-│   └── ...
+│   └── scripts e arquivos do banco
 ├── frontend/
 │   └── app.py
+├── prints pipeline erros/
+├── prints caderno de erros/
+│   ├── inicio.png
+│   ├── cadastrar_erro.png
+│   ├── consultar_erros.png
+│   └── revisar_erros.png
 ├── .env.example
 ├── .gitignore
 ├── README.md
@@ -87,8 +92,6 @@ Na pasta raiz do projeto, crie e ative um ambiente virtual. Em seguida, instale 
 pip install -r requirements.txt
 ```
 
-Se houver um arquivo de dependências específico da pasta `database`, consulte também o respectivo `requirements.txt`.
-
 ### 3. Configurar o MongoDB
 
 Crie um arquivo `.env` na raiz do projeto e configure sua string de conexão:
@@ -111,11 +114,7 @@ Na raiz do projeto:
 uvicorn api.main:app --reload
 ```
 
-A documentação interativa da API fica disponível em:
-
-```
-http://127.0.0.1:8000/docs
-```
+A documentação interativa da API fica disponível em `http://127.0.0.1:8000/docs`.
 
 ### 6. Iniciar a interface
 
@@ -125,17 +124,20 @@ Em outro terminal, na raiz do projeto:
 streamlit run frontend/app.py
 ```
 
-A interface será aberta em:
-
-```
-http://localhost:8501
-```
+A interface será aberta em `http://localhost:8501`.
 
 > A aplicação é executada localmente. Para acessar em outro computador, é necessário configurar e executar a API e a interface nesse ambiente também.
 
 ## 🖼️ Capturas de tela
 
-As capturas de tela da aplicação serão adicionadas nesta seção para apresentar as páginas **Início**, **Cadastrar erro**, **Consultar erros** e **Revisar erros**.
+As imagens da interface estão organizadas na pasta **`prints caderno de erros`**, separadas dos prints do pipeline.
+
+| Página | Captura |
+|---|---|
+| Início | ![Página inicial](prints%20caderno%20de%20erros/inicio.png) |
+| Cadastrar erro | ![Cadastro de erro](prints%20caderno%20de%20erros/cadastrar_erro.png) |
+| Consultar erros | ![Consulta de erros](prints%20caderno%20de%20erros/consultar_erros.png) |
+| Revisar erros | ![Revisão de erros](prints%20caderno%20de%20erros/revisar_erros.png) |
 
 ## 👥 Trabalho acadêmico
 
