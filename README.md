@@ -1,144 +1,56 @@
-# 📚 Caderno de Erros
+# caderno-de-erros-nosql
+Caderno de erros inteligente com MongoDB (trabalho de BD NoSQL, UFU)
 
-Aplicação desenvolvida para a disciplina **Banco de Dados NoSQL**, do curso de Gestão da Informação da Universidade Federal de Uberlândia (UFU).
+# Descrição do Sistema
 
-O Caderno de Erros ajuda estudantes a registrar, organizar e revisar erros cometidos durante os estudos, acompanhando suas dificuldades e seu histórico de revisões.
+O Caderno de Erros é uma aplicação voltada para estudantes que desejam
+organizar, acompanhar e revisar os erros cometidos durante seus estudos.
 
-## 🎯 Objetivo
+A proposta do sistema é transformar erros cometidos em exercícios,
+provas, listas de questões e outras atividades acadêmicas, 
+permitindo que o estudante registre suas dificuldades
+e acompanhe sua evolução ao longo do tempo.
 
-Evitar que erros cometidos em provas, listas e atividades fiquem esquecidos ou dispersos em anotações. O sistema permite registrar cada dificuldade e acompanhar as revisões realizadas.
+O sistema permitirá o cadastro de erros associados a diferentes disciplinas
+e assuntos, incluindo informações como descrição do erro, tipo de
+dificuldade, nível de dificuldade, quantidade de vezes que o erro foi
+cometido e palavras-chave relacionadas ao conteúdo.
 
-## ✨ Funcionalidades
+Também será possível registrar revisões dos erros cadastrados,
+informando a data da revisão, o resultado obtido e observações sobre
+o desempenho do estudante.
 
-- **Cadastrar erros:** registrar matéria, assunto, tipo, descrição, dificuldade e tags.
-- **Consultar erros:** visualizar os registros e filtrar por matéria, tipo e dificuldade.
-- **Revisar erros:** selecionar um erro e registrar se acertou ou errou novamente.
-- **Histórico de revisões:** consultar datas, resultados e observações de revisões anteriores.
-- **Indicadores:** visualizar a quantidade de erros cadastrados e revisões realizadas.
+A aplicação contará com funcionalidades de consulta e organização
+dos erros, possibilitando a filtragem por disciplina, assunto,
+tipo e dificuldade. Além disso, poderá auxiliar na identificação
+de erros recorrentes e na priorização de conteúdos que precisam
+ser revisados.
 
-## 🖥️ Tecnologias
+# Tecnologias Utilizadas
 
-- **Python** — linguagem de programação.
-- **Streamlit** — interface da aplicação.
-- **FastAPI** — API responsável pelas operações do sistema.
-- **MongoDB Atlas** — banco de dados NoSQL orientado a documentos.
-- **PyMongo** — comunicação entre Python e MongoDB.
-- **python-dotenv** — carregamento de variáveis de ambiente.
+- Python: linguagem utilizada no desenvolvimento da aplicação.
+- MongoDB Atlas: banco de dados NoSQL orientado a documentos,
+  utilizado para armazenamento das informações.
+- PyMongo: biblioteca responsável pela comunicação entre Python
+  e MongoDB.
+- python-dotenv: biblioteca utilizada para carregar variáveis
+  de ambiente, como a string de conexão ao banco.
 
-## 🗂️ Organização do repositório
+# Justificativa da Escolha do MongoDB
 
-```
-caderno-de-erros-nosql/
-├── api/
-│   └── main.py
-├── database/
-│   └── scripts e arquivos do banco
-├── frontend/
-│   └── app.py
-├── prints pipeline erros/
-├── prints caderno de erros/
-│   ├── inicio.png
-│   ├── cadastrar_erro.png
-│   ├── consultar_erros.png
-│   └── revisar_erros.png
-├── .env.example
-├── .gitignore
-├── README.md
-└── requirements.txt
-```
+O MongoDB foi escolhido por ser um banco de dados NoSQL orientado
+a documentos, permitindo armazenar informações em estruturas
+semelhantes a JSON.
+Essa característica é adequada ao Caderno de Erros, pois cada erro
+pode possuir diferentes informações e quantidades de revisões.
+A utilização de documentos embutidos permite armazenar o histórico
+de revisões diretamente no documento correspondente ao erro,
+facilitando a representação de informações relacionadas.
+Além disso, a flexibilidade do MongoDB permite que novos campos
+e funcionalidades sejam incorporados ao sistema conforme sua evolução,
+sem exigir uma estrutura rígida de tabelas.
 
-## 🧠 Por que MongoDB?
+# Exemplos de Documentos
 
-O MongoDB foi escolhido por ser um banco NoSQL orientado a documentos, que armazena dados em estruturas semelhantes a JSON.
-
-Essa abordagem é adequada ao Caderno de Erros porque cada erro possui informações próprias e pode conter um conjunto variável de revisões. O histórico de revisões é armazenado como um **array de documentos embutidos** no documento do erro, representando naturalmente essa relação.
-
-A flexibilidade do modelo permite acrescentar informações ao registro conforme novas funcionalidades forem desenvolvidas. Além disso, o projeto utiliza operações próprias do MongoDB, como:
-
-- **Inserção:** `insert_one()`, para cadastrar erros.
-- **Consulta:** `find()`, para recuperar os registros.
-- **Atualização:** `update_one()`, com `$push` para adicionar revisões ao histórico.
-- **Atualização numérica:** `$inc`, para incrementar a quantidade de erros quando o estudante erra novamente.
-
-## 📄 Estrutura dos documentos
-
-Um documento da coleção `erros` pode conter:
-
-- `usuarioEmail`
-- `materia`
-- `assunto`
-- `tipo`
-- `descricao`
-- `dificuldade`
-- `tags`
-- `quantidadeErros`
-- `status`
-- `dataCriacao`
-- `revisoes` — array com data, resultado e observação de cada revisão.
-
-## ⚙️ Como executar localmente
-
-### 1. Pré-requisitos
-
-- Python instalado.
-- Acesso ao projeto no GitHub.
-- Conta e cluster no MongoDB Atlas.
-
-### 2. Instalar dependências
-
-Na pasta raiz do projeto, crie e ative um ambiente virtual. Em seguida, instale as dependências:
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Configurar o MongoDB
-
-Crie um arquivo `.env` na raiz do projeto e configure sua string de conexão:
-
-```env
-MONGODB_URI=sua_string_de_conexao_do_mongodb_atlas
-```
-
-**Não compartilhe nem publique o arquivo `.env`.** O arquivo `.env.example` serve apenas como modelo de configuração.
-
-### 4. Preparar o banco
-
-Execute, conforme necessário, os scripts da pasta `database` para criar o banco, as coleções, os índices e os documentos de exemplo.
-
-### 5. Iniciar a API
-
-Na raiz do projeto:
-
-```bash
-uvicorn api.main:app --reload
-```
-
-A documentação interativa da API fica disponível em `http://127.0.0.1:8000/docs`.
-
-### 6. Iniciar a interface
-
-Em outro terminal, na raiz do projeto:
-
-```bash
-streamlit run frontend/app.py
-```
-
-A interface será aberta em `http://localhost:8501`.
-
-> A aplicação é executada localmente. Para acessar em outro computador, é necessário configurar e executar a API e a interface nesse ambiente também.
-
-## 🖼️ Capturas de tela
-
-As imagens da interface estão organizadas na pasta **`prints caderno de erros`**, separadas dos prints do pipeline.
-
-| Página | Captura |
-|---|---|
-| Início | ![Página inicial](prints%20caderno%20de%20erros/inicio.png) |
-| Cadastrar erro | ![Cadastro de erro](prints%20caderno%20de%20erros/cadastrar_erro.png) |
-| Consultar erros | ![Consulta de erros](prints%20caderno%20de%20erros/consultar_erros.png) |
-| Revisar erros | ![Revisão de erros](prints%20caderno%20de%20erros/revisar_erros.png) |
-
-## 👥 Trabalho acadêmico
-
-Projeto desenvolvido em dupla para a disciplina **Banco de Dados NoSQL**, na Universidade Federal de Uberlândia (UFU).
+O script `database/criar_banco.py` realiza a criação do banco,
+da coleção e a inserção de documentos de exemplo no MongoDB Atlas.
