@@ -1,3 +1,10 @@
 pymongo
 dnspython
 python-dotenv
+fastapi
+uvicorn[standard]
+redis
+bcrypt
+streamlit
+pandas
+requests

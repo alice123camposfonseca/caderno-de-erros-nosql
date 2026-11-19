@@ -1,6 +1,7 @@
 
 import os
 from datetime import datetime
+import bcrypt
 from dotenv import load_dotenv
 from pymongo import MongoClient
 
@@ -27,18 +28,21 @@ usuarios_exemplo = [
     {
         "nome": "Ana",
         "email": "ana@email.com",
+        "senhaHash": bcrypt.hashpw(b"senha123", bcrypt.gensalt()).decode("utf-8"),
         "dataCadastro": datetime(2026, 11, 10),
         "status": "ativo"
     },
     {
         "nome": "Bruno",
         "email": "bruno@email.com",
+        "senhaHash": bcrypt.hashpw(b"senha123", bcrypt.gensalt()).decode("utf-8"),
         "dataCadastro": datetime(2026, 11, 10),
         "status": "ativo"
     },
     {
         "nome": "Carla",
         "email": "carla@email.com",
+        "senhaHash": bcrypt.hashpw(b"senha123", bcrypt.gensalt()).decode("utf-8"),
         "dataCadastro": datetime(2026, 11, 10),
         "status": "ativo"
     }
@@ -48,9 +52,10 @@ usuarios_exemplo = [
 usuarios.create_index("email", unique=True)
 
 # Inserir os usuários de exemplo
-resultado = usuarios.insert_many(usuarios_exemplo)
+for usuario in usuarios_exemplo:
+    usuarios.update_one({"email": usuario["email"]}, {"$set": usuario}, upsert=True)
 
-print(f"{len(resultado.inserted_ids)} usuários inseridos!")
+print(f"{len(usuarios_exemplo)} usuários criados ou atualizados!")
 
 # Consultar e exibir os usuários
 print("\nUsuários cadastrados:")

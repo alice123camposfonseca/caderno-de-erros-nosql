@@ -35,6 +35,44 @@ ser revisados.
   e MongoDB.
 - python-dotenv: biblioteca utilizada para carregar variáveis
   de ambiente, como a string de conexão ao banco.
+- Redis Stack: cache de login e estruturas probabilísticas.
+
+# Redis: login e estatísticas de uso
+
+Esta etapa adiciona Redis ao sistema sem substituir o MongoDB, que continua
+como fonte persistente dos usuários e erros.
+
+| Estrutura | Chave | Uso no projeto |
+| --- | --- | --- |
+| Cache com TTL | `auth:session:<token>` | Sessão do login por 30 minutos. |
+| Bloom Filter | `users:emails` | Evita consultar o MongoDB para e-mails que certamente não existem. |
+| HyperLogLog | `stats:unique-users:<data>` | Estima usuários únicos que fizeram login no dia. |
+| Count-Min Sketch | `stats:login-frequency` e `stats:event-frequency` | Estima logins por usuário e eventos como cadastros e revisões. |
+
+## Executar a etapa Redis
+
+1. Copie `.env.example` para `.env` e preencha `MONGODB_URI`.
+2. Crie/atualize os usuários de demonstração (todos usam a senha `senha123`):
+   `python database/criar_usuarios.py`.
+3. Instale as dependências: `pip install -r requirements.txt`.
+4. Inicie o Redis Stack: `docker compose up -d`.
+5. Inicie a API: `uvicorn api.main:app --reload`.
+
+Faça `POST /auth/login` com `{"email":"ana@email.com","senha":"senha123"}`.
+Use o token retornado como `Authorization: Bearer <token>` em `GET /auth/me`.
+Após alguns logins, consulte `GET /stats/usage` para ver as estimativas.
+
+## Interface com login
+
+Com a API e o Redis em execução, inicie a interface com:
+
+```powershell
+streamlit run frontend/app.py
+```
+
+Ela abrirá uma tela de login. Entre com `ana@email.com` e `senha123`.
+O token da sessão fica somente na sessão do navegador e o botão **Sair**
+invalida a chave correspondente no Redis.
 
 # Justificativa da Escolha do MongoDB
 

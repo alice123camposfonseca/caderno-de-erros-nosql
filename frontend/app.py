@@ -14,11 +14,76 @@ st.set_page_config(
 
 API_URL = "http://127.0.0.1:8000"
 
+
+def cabecalho_autorizacao():
+    return {"Authorization": f"Bearer {st.session_state.access_token}"}
+
+
+# =========================
+# LOGIN
+# =========================
+
+if "access_token" not in st.session_state:
+    st.title("📚 Caderno de Erros")
+    st.subheader("Entrar")
+
+    with st.form("formulario_login"):
+        email_login = st.text_input("E-mail")
+        senha_login = st.text_input("Senha", type="password")
+        entrar = st.form_submit_button("Entrar")
+
+    if entrar:
+        try:
+            resposta_login = requests.post(
+                f"{API_URL}/auth/login",
+                json={"email": email_login, "senha": senha_login},
+                timeout=10,
+            )
+
+            if resposta_login.status_code == 200:
+                st.session_state.access_token = resposta_login.json()["access_token"]
+                st.rerun()
+            else:
+                st.error("E-mail ou senha inválidos.")
+        except requests.exceptions.RequestException:
+            st.error("Não foi possível conectar à API.")
+
+    st.info("Usuários de demonstração: ana@email.com, bruno@email.com ou carla@email.com. Senha: senha123.")
+    st.stop()
+
+
+try:
+    resposta_perfil = requests.get(
+        f"{API_URL}/auth/me",
+        headers=cabecalho_autorizacao(),
+        timeout=10,
+    )
+    if resposta_perfil.status_code != 200:
+        del st.session_state.access_token
+        st.rerun()
+    usuario_atual = resposta_perfil.json()
+except requests.exceptions.RequestException:
+    st.error("Não foi possível conectar à API.")
+    st.stop()
+
 # =========================
 # MENU
 # =========================
 
 st.sidebar.title("📚 Caderno de Erros")
+st.sidebar.write(f"Conectado como **{usuario_atual['nome']}**")
+st.sidebar.caption(usuario_atual["email"])
+
+if st.sidebar.button("Sair"):
+    try:
+        requests.post(
+            f"{API_URL}/auth/logout",
+            headers=cabecalho_autorizacao(),
+            timeout=10,
+        )
+    finally:
+        del st.session_state.access_token
+        st.rerun()
 
 pagina = st.sidebar.radio(
     "Navegação",
@@ -87,9 +152,6 @@ elif pagina == "Cadastrar erro":
     st.title("✏️ Cadastrar novo erro")
 
     with st.form("formulario_erro"):
-
-        usuario = st.text_input("E-mail do estudante")
-
         materia = st.text_input("Matéria")
 
         assunto = st.text_input("Assunto")
@@ -120,13 +182,13 @@ elif pagina == "Cadastrar erro":
 
     if enviar:
 
-        if not usuario or not materia or not assunto or not descricao:
+        if not materia or not assunto or not descricao:
             st.warning("Preencha os campos obrigatórios.")
 
         else:
 
             novo_erro = {
-                "usuarioEmail": usuario,
+                "usuarioEmail": usuario_atual["email"],
                 "materia": materia,
                 "assunto": assunto,
                 "tipo": tipo,
